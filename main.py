@@ -25,16 +25,16 @@ correct_word = 0
 def start(bot, update):
     bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
     time.sleep(1)
-    custom_keyboard = [['Learn new words'], ['Check yourself']]
+    custom_keyboard = [['Учить слова'], ['Проверь себя']]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False)
-    bot.send_message(chat_id=update.message.chat_id, text="What do you want to do?", reply_markup=reply_markup)
+    bot.send_message(chat_id=update.message.chat_id, text="Чего желаете?", reply_markup=reply_markup)
     return ACTION
 
 
 def action(bot, update):
-    if (update.message.text == 'Learn new words'):
+    if (update.message.text == 'Учить слова'):
         learn(bot, update)
-    elif (update.message.text == 'Check yourself'):
+    elif (update.message.text == 'Проверь себя'):
         num = generate_correct_answer()
         global correct_word
         correct_word = num
@@ -70,19 +70,19 @@ def get_correct_word():
 
 def answer_check(bot, update):
     correct_word = get_correct_word()
-    custom_keyboard = [['Learn new words'], ['Check yourself']]
+    custom_keyboard = [['Учить слова'], ['Проверь себя']]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=False)
     if (update.message.text == words[correct_word]):
         bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
-        bot.send_message(chat_id=update.message.chat_id, text="*Correct!*", parse_mode=telegram.ParseMode.MARKDOWN)
-        bot.send_message(chat_id=update.message.chat_id, text="What do you want to do?", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="*Правильно!*", parse_mode=telegram.ParseMode.MARKDOWN)
+        bot.send_message(chat_id=update.message.chat_id, text="Чего желаете?", reply_markup=reply_markup)
         return ACTION
     else:
         bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
         bot.send_message(chat_id=update.message.chat_id,
-                         text="*Incorrect!*" + " Correct answer is: " + words[correct_word],
+                         text="*Неправильно!*" + " Правильный ответ: " + words[correct_word],
                          parse_mode=telegram.ParseMode.MARKDOWN)
-        bot.send_message(chat_id=update.message.chat_id, text="What do you want to do?", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="Чего желаете?", reply_markup=reply_markup)
         return ACTION
 
 
@@ -93,7 +93,7 @@ def learn(bot, update):
     bot.send_message(chat_id=update.message.chat_id,
                      text="*" + words[num] + "* - " + description[num] + "\n" + "\n_" + type[num] + "_",
                      parse_mode=telegram.ParseMode.MARKDOWN)
-    bot.send_message(chat_id=update.message.chat_id, text="What is next?")
+    bot.send_message(chat_id=update.message.chat_id, text="Что дальше?")
 
 
 def cancel(bot, update):
@@ -126,7 +126,7 @@ def main():
         entry_points=[CommandHandler('start', start)],
 
         states={
-            ACTION: [RegexHandler('^(Learn new words|Check yourself)$', action)],
+            ACTION: [RegexHandler('^(Учить слова|Проверь себя)$', action)],
             ANSWER: [MessageHandler(Filters.text, answer_check)]
         },
 
